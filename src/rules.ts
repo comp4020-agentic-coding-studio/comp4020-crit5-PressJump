@@ -10,9 +10,16 @@ import { BOARDS } from "./boards.ts";
 // solved by scribbling costs you the board after it. That is the choice that
 // has to carry five minutes, and it is legible without a word because the
 // meter is right there while you draw.
+//
+// The top-up is deliberately a little LESS than a comfortable stroke costs.
+// At 140 it was more, and the arithmetic quietly refilled the meter faster
+// than anyone could spend it: playing through, the bar sat within a few
+// percent of full from board one to board seven and the stakes were purely
+// decorative. At 80 a run that draws big confident lines visibly drains, a
+// run that aims drifts upwards, and neither of those needed explaining.
 
 export const INK_START = 300;
-export const INK_TOPUP = 140;
+export const INK_TOPUP = 80;
 export const INK_MAX = 420;
 
 /** Shorter than this is a tap, not a stroke. Taps cost nothing and draw nothing. */

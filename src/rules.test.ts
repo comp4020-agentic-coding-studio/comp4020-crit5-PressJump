@@ -51,8 +51,16 @@ describe("what is left over is carried, not reset", () => {
     // Without this, a player who solves the early boards cheaply arrives at
     // board seven unable to lose, and the last third of the game is over
     // before it starts.
-    expect(sink(start()).ink).toBe(INK_MAX);
-    expect(INK_START + INK_TOPUP).toBeGreaterThan(INK_MAX);
+    let run = start();
+    for (let board = 0; board < BOARDS.length - 1; board += 1) {
+      run = sink(run);
+      expect(run.ink).toBeLessThanOrEqual(INK_MAX);
+    }
+    expect(run.ink).toBe(INK_MAX);
+    expect(
+      INK_START + (BOARDS.length - 1) * INK_TOPUP,
+      "the cap is unreachable, so it is not capping anything",
+    ).toBeGreaterThan(INK_MAX);
   });
 });
 
