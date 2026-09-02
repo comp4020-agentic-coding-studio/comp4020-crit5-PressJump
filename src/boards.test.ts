@@ -8,11 +8,12 @@ import { INK_MAX, draw, sink, start } from "./rules.ts";
 // scripts/solve-boards.ts searching a grid of them and kept here so the fast
 // suite can prove the game is still finishable.
 //
-// These are the FASTEST solutions the search found, not the cheapest. The
-// first version pinned the cheapest and board seven's was a six degree ramp
-// the ball creeps down for eleven seconds. Green suite, and a board that felt
-// broken the moment I played it in a browser. Fastest to sink is the closest
-// thing the search has to "what a person would actually draw".
+// These are the most ROBUST solutions the search found, meaning the ones with
+// the most neighbouring strokes that also work. Cheapest and fastest were both
+// tried first and both put strokes in here that no player would draw, or that
+// only worked by a hair. A pinned solution sitting on a knife edge is worse
+// than no pin at all, because it makes the suite green about a board that is
+// miserable to play.
 //
 // This is the check I would have missed. Nudging a pillar four units to make a
 // board look better is a one line change that can make it unwinnable, and
@@ -38,32 +39,32 @@ function stroke(from: Vec, to: Vec) {
 
 const SOLUTIONS: [Vec, Vec][] = [
   [
-    { x: 4, y: 16 },
-    { x: 64, y: 88 },
+    { x: 16, y: 28 },
+    { x: 52, y: 76 },
+  ],
+  [
+    { x: 16, y: 40 },
+    { x: 124, y: 88 },
   ],
   [
     { x: 16, y: 28 },
-    { x: 124, y: 100 },
+    { x: 100, y: 64 },
   ],
   [
-    { x: 16, y: 16 },
-    { x: 88, y: 64 },
+    { x: 4, y: 76 },
+    { x: 40, y: 100 },
   ],
   [
-    { x: 16, y: 16 },
-    { x: 64, y: 64 },
+    { x: 40, y: 76 },
+    { x: 148, y: 52 },
   ],
   [
-    { x: 28, y: 100 },
-    { x: 158, y: 28 },
-  ],
-  [
-    { x: 4, y: 16 },
-    { x: 40, y: 28 },
+    { x: 16, y: 28 },
+    { x: 40, y: 76 },
   ],
   [
     { x: 4, y: 28 },
-    { x: 136, y: 100 },
+    { x: 136, y: 88 },
   ],
 ];
 

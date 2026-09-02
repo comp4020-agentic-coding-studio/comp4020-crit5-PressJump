@@ -11,9 +11,9 @@ import { BOARDS } from "./boards.ts";
 // has to carry five minutes, and it is legible without a word because the
 // meter is right there while you draw.
 
-export const INK_START = 210;
-export const INK_TOPUP = 96;
-export const INK_MAX = 300;
+export const INK_START = 300;
+export const INK_TOPUP = 140;
+export const INK_MAX = 420;
 
 /** Shorter than this is a tap, not a stroke. Taps cost nothing and draw nothing. */
 export const MIN_STROKE = 6;

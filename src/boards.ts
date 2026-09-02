@@ -62,19 +62,19 @@ export function offField(at: Vec): boolean {
 }
 
 export const BOARDS: Board[] = [
-  // 1. A spout, a cup, and one slope already on the board running into it.
-  // That slope is the whole tutorial: it is a line, exactly like the ones the
-  // player can make, and it is visibly the reason a ball that reaches it ends
-  // up in the cup. The gap between the spout and the near end of it is the
-  // question. Any mark that bridges that gap answers it, which is why this
-  // board has to be the most forgiving one in the game by a distance.
+  // 1. A spout, a cup in a shallow bowl, and one slope already on the board
+  // running into it. That slope is the whole tutorial: it is a line, exactly
+  // like the ones the player can make, and it is visibly the reason a ball
+  // that reaches it ends up in the cup. The gap between the spout and the near
+  // end of it is the question, and the bowl means almost any mark that sends
+  // the ball rightward answers it.
   {
     spout: 22,
     cup: { x: 100, y: 100 },
-    walls: [segment(32, 72, 100, 100)],
+    walls: [segment(30, 66, 100, 100), segment(152, 70, 111, 100)],
     ghost: [
-      { x: 14, y: 52 },
-      { x: 44, y: 74 },
+      { x: 14, y: 46 },
+      { x: 42, y: 66 },
     ],
   },
 
@@ -83,7 +83,11 @@ export const BOARDS: Board[] = [
   {
     spout: 18,
     cup: { x: 126, y: 96 },
-    walls: [segment(6, 38, 58, 52), segment(104, 90, 126, 96)],
+    walls: [
+      segment(6, 38, 58, 52),
+      segment(100, 86, 126, 96),
+      segment(158, 74, 137, 96),
+    ],
   },
 
   // 3. A pillar in the middle. The stroke can no longer just point at the
@@ -91,16 +95,24 @@ export const BOARDS: Board[] = [
   {
     spout: 18,
     cup: { x: 128, y: 102 },
-    walls: [segment(86, 120, 86, 62), segment(100, 92, 128, 102)],
+    walls: [
+      segment(86, 120, 86, 70),
+      segment(104, 94, 128, 102),
+      segment(158, 82, 139, 102),
+    ],
   },
 
-  // 4. A long shelf with the cup partway along it and nothing behind it, so
-  // the fast stroke that cleared board three skips the cup and rolls off the
-  // end. First board where more speed is the wrong answer.
+  // 4. A hole in a long shelf. The one board with no bowl around the cup,
+  // because overshooting IS the lesson here and a bowl would teach the
+  // opposite. It was a cup standing ON the shelf at first, which meant a ball
+  // rolling along the shelf hit the side of it and stopped dead every time,
+  // and 46 strokes in 6216 worked. A hole reads the same and plays completely
+  // differently: get the ball rolling and it drops in, get it rolling too
+  // fast and it sails over and off the far end.
   {
     spout: 34,
     cup: { x: 92, y: 99 },
-    walls: [segment(50, 110, 160, 110)],
+    walls: [segment(46, 99, 92, 99), segment(103, 99, 160, 99)],
   },
 
   // 5. The cup is behind the spout, and a stub hanging from the ceiling
@@ -108,7 +120,9 @@ export const BOARDS: Board[] = [
   {
     spout: 132,
     cup: { x: 14, y: 98 },
-    walls: [segment(76, 0, 76, 58), segment(46, 90, 25, 98)],
+    walls: [segment(76, 0, 76, 58),
+      segment(66, 78, 25, 98),
+      segment(0, 78, 14, 98)],
   },
 
   // 6. A roof with a gap in it. Nothing to do with speed or direction now,
@@ -116,7 +130,12 @@ export const BOARDS: Board[] = [
   {
     spout: 22,
     cup: { x: 72, y: 98 },
-    walls: [segment(24, 72, 68, 72), segment(90, 72, 152, 72)],
+    walls: [
+      segment(24, 72, 68, 72),
+      segment(90, 72, 152, 72),
+      segment(54, 86, 72, 98),
+      segment(101, 86, 83, 98),
+    ],
   },
 
   // 7. The far corner, past a pillar and under a stub, on whatever ink is
@@ -127,7 +146,7 @@ export const BOARDS: Board[] = [
     walls: [
       segment(70, 120, 70, 88),
       segment(108, 0, 108, 38),
-      segment(120, 94, 138, 102),
+      segment(126, 96, 138, 102),
     ],
   },
 ];
