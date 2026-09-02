@@ -2,8 +2,8 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
 import { JSDOM } from "jsdom";
 import { describe, expect, it } from "vitest";
-import { BOARDS } from "../src/boards";
-import { MIN_STROKE, draw, sink, spill, start } from "../src/rules";
+import { BOARDS } from "../src/boards.ts";
+import { MIN_STROKE, draw, sink, spill, start } from "../src/rules.ts";
 
 // C5 - A game. These assert the mechanically checkable lines of the published
 // spec.
