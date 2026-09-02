@@ -1,9 +1,26 @@
-# COMP4020 static prototype template
+# Ink
 
-A starter template for static-site prototypes in **COMP4020 / COMP8020 Agentic
-Coding Studio**. The course provisions a repo from this template for each
-deliverable --- you don't create it yourself. The `start` course skill clones it
-for you; from there, build your prototype and deploy it to GitHub Pages.
+A small browser game, built for COMP4020 crit 5. Seven boards, one meter of
+ink, and a ball that falls.
+
+Nothing in here says how it is played, and that is deliberate. The brief rules
+that out anywhere, on screen or off, and a README is the obvious place for it
+to reappear once the page is not allowed to carry it. `spec/crit-5.test.ts`
+fails the build on either.
+
+`PROCESS.md` is the account of how it was built, and it does give the game
+away, so read the deployed page first if you would rather meet it cold.
+
+## The sensors in here
+
+- `pnpm check` runs the typecheck, the build, both linters and the tests.
+- `node --experimental-strip-types scripts/solve-boards.ts` searches every
+  board for strokes that land the ball, and reports how many work, which is
+  the difficulty curve. The solutions it finds are pinned in
+  `src/boards.test.ts` so `check` can prove the game is still finishable.
+- `scripts/drive.ts` drives the real page in a real Chromium over the
+  debugging protocol, at a real viewport, with real pointer events. It is how
+  the parts of a game that no check can see get looked at.
 
 ## CI and Pages only turn on when you ship
 
