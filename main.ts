@@ -1,4 +1,9 @@
-// The TypeScript entry point, loaded as a module by index.html. Vite compiles
-// it; `pnpm typecheck` type-checks it. If the week's spec rules out
-// JavaScript, delete this file and the script tag that loads it.
-export {};
+import { play } from "./src/game.ts";
+
+// The entry stays small. Everything that is actually the game lives in src/,
+// where it can be tested without a canvas anywhere in sight.
+
+const canvas = document.querySelector<HTMLCanvasElement>("#board");
+const status = document.querySelector<HTMLElement>("#status");
+
+if (canvas && status) play(canvas, status);

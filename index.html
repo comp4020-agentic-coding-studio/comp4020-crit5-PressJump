@@ -3,36 +3,51 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>COMP4020 prototype</title>
+    <title>Ink</title>
     <meta
       name="description"
-      content="Replace this with one sentence saying what this page is. A search result and a link preview both show it."
+      content="Ink. A small browser game about gravity, a falling ball and seven boards."
     />
 
-    <!--
-      The link-preview card: public/card.png, 1200x630 --- replace it. The URL
-      resolves against this page, like any link. No og:title/og:description:
-      scrapers fall back to the <title> and description above.
-    -->
     <meta property="og:type" content="website" />
     <meta property="og:image" content="./card.png" />
     <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body>
-    <header>
-      <nav aria-label="Primary">
-        <a href="./">Home</a>
-      </nav>
-    </header>
-    <main>
-      <h1>COMP4020 prototype</h1>
-      <p>
-        Replace this with your prototype. This week's brief is on the course website;
-        <code>spec/README.md</code> explains how the checks in this repo relate to it.
-      </p>
-    </main>
+  <body class="bg-paper text-ink">
+    <div class="stage">
+      <header class="flex items-baseline justify-between px-4 py-2 sm:px-6">
+        <h1 class="text-muted text-[0.7rem] font-medium tracking-[0.24em] uppercase">
+          Ink
+        </h1>
+        <nav aria-label="Primary">
+          <a
+            class="text-muted hover:text-brand text-[0.7rem] tracking-[0.14em] uppercase"
+            href="https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/"
+            >COMP4020</a
+          >
+        </nav>
+      </header>
+
+      <!--
+        The whole game. No copy anywhere near it on purpose: the board opens
+        with a slope already running into the cup, and that slope is a line of
+        exactly the kind the player can make. Everything else is learned by
+        watching the ball.
+      -->
+      <main class="min-h-0 flex-1">
+        <canvas id="board" aria-label="Board"></canvas>
+      </main>
+
+      <!--
+        Ships empty, and is filled at runtime. A screen reader is told which
+        board it is on and how the run finished, which is a report rather than
+        an instruction, and the page still ships with nothing written on it.
+      -->
+      <p id="status" class="offscreen" role="status" aria-live="polite"></p>
+    </div>
+
     <script type="module" src="./main.ts"></script>
   </body>
 </html>

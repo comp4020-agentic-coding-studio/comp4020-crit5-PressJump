@@ -1,1 +1,61 @@
 @import "tailwindcss";
+
+/* Flat: solid fills and hairlines, no gradients and no shadows. ONE accent, a
+   deep viridian on warm paper, and it is the same viridian the canvas fills
+   the cup and the ink meter with. There is deliberately no second hue in this
+   file, so the eye reads viridian as "the thing this is about" everywhere it
+   appears. The canvas reads these same four variables back off :root, so the
+   palette exists once. */
+@theme {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", roboto, helvetica,
+    arial, sans-serif;
+  --color-paper: #f4f1ea;
+  --color-ink: #16151a;
+  --color-line: #d8d1c4;
+  --color-muted: #8d877d;
+
+  /* The single accent */
+  --color-brand: #1c6b5b;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    text-size-adjust: 100%;
+  }
+}
+
+@layer components {
+  /* The game is the page, so the page is exactly one viewport tall and never
+     scrolls. A scrollbar appearing mid drag on a phone is the difference
+     between drawing a line and panning the document. */
+  .stage {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  #board {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    /* Without this, drawing on a phone scrolls the page instead of leaving a
+       mark, which reads as the game being broken rather than as a gesture
+       going to the wrong place. */
+    touch-action: none;
+    cursor: crosshair;
+  }
+
+  .offscreen {
+    position: absolute;
+    overflow: hidden;
+    clip-path: inset(50%);
+    width: 1px;
+    height: 1px;
+    white-space: nowrap;
+  }
+}

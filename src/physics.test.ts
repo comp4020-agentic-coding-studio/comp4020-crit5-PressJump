@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { segment } from "./geometry.ts";
+import { polylineSegments, segment } from "./geometry.ts";
 import { MAX_SPEED, STEP, ballAt, speedOf, step } from "./physics.ts";
 
 // The rule these hold the game to is "a line you drew is solid". It sounds
@@ -46,6 +46,49 @@ describe("a drawn line is solid", () => {
       step(ball, []);
       expect(speedOf(ball)).toBeLessThanOrEqual(MAX_SPEED + 1e-9);
     }
+  });
+});
+
+describe("a hand drawn line is the line it draws", () => {
+  // The gap between what the tests drew and what a player draws. Every test
+  // in this file used tidy single segments; a stroke off a real finger is a
+  // chain of thirty short ones, and under the first collision loop each of
+  // them charged its own bounce in the same tick. The ball came off a drawn
+  // line several times harder than off the identical straight one, and no
+  // check in the repo had anything to say about it. I found it by driving the
+  // browser and watching a board that the suite swore was solvable fail.
+  const from = { x: 12, y: 40 };
+  const to = { x: 120, y: 78 };
+
+  function chain(pieces: number) {
+    const points = [];
+    for (let index = 0; index <= pieces; index += 1) {
+      const t = index / pieces;
+      points.push({
+        x: from.x + (to.x - from.x) * t,
+        y: from.y + (to.y - from.y) * t,
+      });
+    }
+    return polylineSegments(points);
+  }
+
+  function roll(walls: ReturnType<typeof chain>) {
+    const ball = ballAt(24, 10);
+    for (let tick = 0; tick < 900; tick += 1) step(ball, walls);
+    return ball;
+  }
+
+  it("sends the ball to the same place however finely it was drawn", () => {
+    const one = roll([{ a: from, b: to }]);
+    const many = roll(chain(40));
+    expect(Math.abs(one.at.x - many.at.x)).toBeLessThan(2);
+    expect(Math.abs(one.at.y - many.at.y)).toBeLessThan(2);
+  });
+
+  it("does not get bouncier the more finely it was drawn", () => {
+    const coarse = roll(chain(4));
+    const fine = roll(chain(60));
+    expect(Math.abs(speedOf(coarse) - speedOf(fine))).toBeLessThan(6);
   });
 });
 

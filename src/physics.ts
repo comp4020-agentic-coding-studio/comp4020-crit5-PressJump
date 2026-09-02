@@ -53,19 +53,34 @@ export function step(ball: Ball, walls: readonly Segment[]): void {
   ball.at.x += ball.velocity.x * STEP;
   ball.at.y += ball.velocity.y * STEP;
 
-  // Twice, because resolving against one line can push the ball into another.
-  // A corner between two of the player's strokes is the common case.
-  resolve(ball, walls);
-  resolve(ball, walls);
+  // Deepest contact only, a few times over. Resolving one contact can push the
+  // ball into another, so a corner needs more than one pass; but resolving
+  // EVERY overlapping segment in the same pass is wrong, and wrong in a way
+  // that only shows up once a person is playing.
+  //
+  // A line a player draws is not one segment, it is a chain of thirty short
+  // ones. Under the old loop each of the segments near the ball claimed its
+  // own bounce in the same tick, so a hand drawn line threw the ball off
+  // several times harder than the identical line drawn as a single segment.
+  // Every test in this repo used single segments and every one of them was
+  // green.
+  for (let pass = 0; pass < 4; pass += 1) {
+    if (!resolve(ball, walls)) break;
+  }
 }
 
-function resolve(ball: Ball, walls: readonly Segment[]): void {
+/** Resolves the single deepest contact. Returns false when there was none. */
+function resolve(ball: Ball, walls: readonly Segment[]): boolean {
+  let depth = 0;
+  let nx = 0;
+  let ny = 0;
+
   for (const wall of walls) {
     const near = nearestOn(ball.at, wall);
-    let nx = ball.at.x - near.x;
-    let ny = ball.at.y - near.y;
-    let gap = Math.hypot(nx, ny);
-    if (gap >= BALL_RADIUS) continue;
+    let ax = ball.at.x - near.x;
+    let ay = ball.at.y - near.y;
+    const gap = Math.hypot(ax, ay);
+    if (gap >= BALL_RADIUS || BALL_RADIUS - gap <= depth) continue;
 
     if (gap < 1e-6) {
       // Dead centre on the line, so "away from it" has no direction. Use the
@@ -73,27 +88,33 @@ function resolve(ball: Ball, walls: readonly Segment[]): void {
       const tx = wall.b.x - wall.a.x;
       const ty = wall.b.y - wall.a.y;
       const span = Math.hypot(tx, ty) || 1;
-      nx = -ty / span;
-      ny = tx / span;
-      gap = 0;
+      ax = -ty / span;
+      ay = tx / span;
     } else {
-      nx /= gap;
-      ny /= gap;
+      ax /= gap;
+      ay /= gap;
     }
 
-    ball.at.x += nx * (BALL_RADIUS - gap);
-    ball.at.y += ny * (BALL_RADIUS - gap);
-
-    const into = ball.velocity.x * nx + ball.velocity.y * ny;
-    if (into >= 0) continue;
-
-    // Split the velocity at the contact point. The part going into the
-    // surface bounces back scaled by RESTITUTION; the part running along it
-    // keeps almost all of itself, and that surviving tangential part is the
-    // whole reason a ball rolls down a ramp rather than sticking to it.
-    const tangentX = ball.velocity.x - into * nx;
-    const tangentY = ball.velocity.y - into * ny;
-    ball.velocity.x = tangentX * (1 - FRICTION) - into * RESTITUTION * nx;
-    ball.velocity.y = tangentY * (1 - FRICTION) - into * RESTITUTION * ny;
+    depth = BALL_RADIUS - gap;
+    nx = ax;
+    ny = ay;
   }
+
+  if (depth <= 0) return false;
+
+  ball.at.x += nx * depth;
+  ball.at.y += ny * depth;
+
+  const into = ball.velocity.x * nx + ball.velocity.y * ny;
+  if (into >= 0) return true;
+
+  // Split the velocity at the contact point. The part going into the surface
+  // bounces back scaled by RESTITUTION; the part running along it keeps almost
+  // all of itself, and that surviving tangential part is the whole reason a
+  // ball rolls down a ramp rather than sticking to it.
+  const tangentX = ball.velocity.x - into * nx;
+  const tangentY = ball.velocity.y - into * ny;
+  ball.velocity.x = tangentX * (1 - FRICTION) - into * RESTITUTION * nx;
+  ball.velocity.y = tangentY * (1 - FRICTION) - into * RESTITUTION * ny;
+  return true;
 }
